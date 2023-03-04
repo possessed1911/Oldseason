@@ -1,6 +1,10 @@
 # Oldseason
 
-**Oldseason is a lightweight toolkit which runs without any User Interface and is controlled via an icon in your taskbar.**
+**Oldseason is a lightweight toolkit which lets us return to better days of SoloQ and runs without any User Interface**
+
+![preview](https://i.imgur.com/trKU4yx.png)
+
+**You can interact with Oldseason using the icon in your taskbar**
 
 software requirements
 
