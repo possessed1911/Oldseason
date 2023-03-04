@@ -13,10 +13,8 @@ import java.net.Socket;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -31,6 +29,7 @@ public class Main {
     private static final Map<Integer, String> map = new HashMap<>();
 
     public static void main(String[] args) {
+        Logger.debug("Started oldseason at {}", new Date());
         try {
             Main.rewrite();
         } catch (IOException e) {
@@ -46,7 +45,8 @@ public class Main {
             Application.addMenuEntry("Start Oldseason Client", () -> {
                 try {
                     String client = LocaleInstallation.getRiotClientServices().toPath().getParent().getParent().resolve("League of Legends").resolve("LeagueClient.exe").toString();
-                    Runtime.getRuntime().exec(String.join(" ", client, "--allow-multiple-clients"));
+                    Logger.debug("execute: \"" + client + "\" --allow-multiple-clients");
+                    Runtime.getRuntime().exec("\"" + client + "\" --allow-multiple-clients");
                 } catch (IOException e) {
                     Logger.error(e);
                 }
@@ -54,6 +54,7 @@ public class Main {
             Application.addMenuEntry("Github", () -> browse("https://github.com/Riotphobia/Oldseason"));
             Application.addMenuEntry("Twitter", () -> browse("https://twitter.com/hawolt"));
             for (Map.Entry<Integer, String> entry : map.entrySet()) {
+                Logger.debug("setting up proxy on port {} for {}", entry.getKey(), entry.getValue());
                 ServerSocket socket = new ServerSocket(entry.getKey());
                 proxies.add(socket);
                 ExecutorService service = Executors.newCachedThreadPool();
@@ -61,6 +62,7 @@ public class Main {
                     do {
                         try {
                             Socket incoming = socket.accept();
+                            Logger.debug("accepted connection on port {}", entry.getKey());
                             LeagueRtmpClient client = new LeagueRtmpClient(null, entry.getValue(), 2099);
                             client.connect();
                             Socket outgoing = client.getSocket();
@@ -88,6 +90,7 @@ public class Main {
 
     private static void rewrite() throws IOException {
         Path path = LocaleInstallation.SYSTEM_YAML.toPath();
+        Logger.debug("system.yaml: {}", path);
         Path original = path.getParent().resolve("system.yaml.backup");
         List<String> lines;
         if (original.toFile().exists()) {
@@ -103,6 +106,10 @@ public class Main {
             StringBuilder host = new StringBuilder(lines.get(i + 1));
             int indexOfHost = host.indexOf(":") + 2;
             String relay = host.substring(indexOfHost, host.length());
+            int firstIndex = relay.indexOf(".");
+            int secondIndex = relay.indexOf(".", firstIndex + 1);
+            String region = relay.substring(firstIndex + 1, secondIndex);
+            relay = String.format("feapp.%s.lol.pvp.net", region);
             host.replace(indexOfHost, host.length(), "127.0.0.1");
             lines.set(i + 1, host.toString());
             StringBuilder port = new StringBuilder(lines.get(i + 2));
@@ -114,6 +121,7 @@ public class Main {
             int indexOfTLS = tls.indexOf(":") + 2;
             tls.replace(indexOfTLS, tls.length(), "false");
             lines.set(i + 4, tls.toString());
+            Logger.debug("mapping {} to port {}", relay, mapping);
             map.put(mapping, relay);
             i += 4;
         }

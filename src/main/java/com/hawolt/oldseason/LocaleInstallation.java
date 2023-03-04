@@ -34,10 +34,12 @@ public class LocaleInstallation {
     }
 
     public static File getRiotClientServices() throws IOException {
+        Logger.debug("identified ALLUSERSPROFILE as {}", System.getenv("ALLUSERSPROFILE"));
         File file = Paths.get(System.getenv("ALLUSERSPROFILE"))
                 .resolve(StaticConstants.RIOT_GAMES)
                 .resolve(StaticConstants.RIOT_INSTALLS_JSON).toFile();
         if (!file.exists()) return getRiotClientServices();
+        Logger.debug("successfully found RiotInstalls.json");
         JSONObject object = new JSONObject(new String(Files.readAllBytes(file.toPath())));
         List<String> list = load(new ArrayList<>(), object);
         return list.stream().map(File::new)
@@ -59,6 +61,7 @@ public class LocaleInstallation {
     }
 
     private static File get() {
+        Logger.debug("opening file chooser dialog");
         JOptionPane.showMessageDialog(null, "Please locate and select RiotClientServices.exe");
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileNameExtensionFilter("Executable Files", "exe"));
