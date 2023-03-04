@@ -10,3 +10,4 @@ target/*
 # test files
 */src/test/*
 src/test/*
+debug/*
