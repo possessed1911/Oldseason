@@ -22,4 +22,4 @@ Join the Riotphobia [discord](https://discord.gg/JRDwxFxW7m)
 
 The latest pre-compiled Oldseason version can be found in the [Release Section](https://github.com/Riotphobia/Oldseason/releases)
 
-Just take me to the [download](https://github.com/Riotphobia/Oldseason/releases/download/production-1.01/Oldseason-1.01.jar)
+Just take me to the [download](https://github.com/Riotphobia/Oldseason/releases/download/production-1.022/Oldseason-1.022.jar)
