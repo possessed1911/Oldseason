@@ -4,8 +4,8 @@ import com.hawolt.logger.Logger;
 import com.hawolt.oldseason.management.WMIC;
 import com.hawolt.oldseason.proxy.Incoming;
 import com.hawolt.oldseason.proxy.Outgoing;
-import com.hawolt.rtmp.LeagueRtmpClient;
 
+import javax.net.ssl.SSLSocketFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -75,9 +75,7 @@ public class Main {
                         try {
                             Socket incoming = socket.accept();
                             Logger.debug("accepted connection on port {} relaying to {}", entry.getKey(), entry.getValue());
-                            LeagueRtmpClient client = new LeagueRtmpClient(null, entry.getValue(), 2099);
-                            client.connect();
-                            Socket outgoing = client.getSocket();
+                            Socket outgoing = SSLSocketFactory.getDefault().createSocket(entry.getValue(), 2099);
                             service.execute(new Incoming(incoming, outgoing));
                             service.execute(new Outgoing(outgoing, incoming));
                         } catch (IOException e) {
