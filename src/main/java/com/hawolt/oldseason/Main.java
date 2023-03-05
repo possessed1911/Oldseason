@@ -1,6 +1,7 @@
 package com.hawolt.oldseason;
 
 import com.hawolt.logger.Logger;
+import com.hawolt.oldseason.management.WMIC;
 import com.hawolt.oldseason.proxy.Incoming;
 import com.hawolt.oldseason.proxy.Outgoing;
 import com.hawolt.rtmp.LeagueRtmpClient;
@@ -30,6 +31,14 @@ public class Main {
 
     public static void main(String[] args) {
         Logger.debug("Started oldseason at {}", new Date());
+        try {
+            for (String pid : WMIC.retrieve()) {
+                Logger.debug("Found another running Oldseason instance, killing {}", pid);
+                WMIC.kill(pid);
+            }
+        } catch (IOException e) {
+            Logger.error(e);
+        }
         try {
             Main.rewrite();
         } catch (IOException e) {
