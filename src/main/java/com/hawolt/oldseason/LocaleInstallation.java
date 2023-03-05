@@ -20,12 +20,12 @@ import java.util.List;
 
 public class LocaleInstallation {
 
-    public static File RIOT_CLIENT_SERVICES, SYSTEM_YAML;
+    public static File LEAGUE_INSTALL_DIR, SYSTEM_YAML;
 
     static {
         try {
-            RIOT_CLIENT_SERVICES = getRiotClientServices();
-            SYSTEM_YAML = locateYaml(RIOT_CLIENT_SERVICES);
+            LEAGUE_INSTALL_DIR = getLeagueInstallDir();
+            SYSTEM_YAML = locateYaml(LEAGUE_INSTALL_DIR);
         } catch (IOException e) {
             Logger.error(e);
             System.err.println("Unable to locate RiotClientServices.exe or system.yaml, exiting (1).");
@@ -33,32 +33,42 @@ public class LocaleInstallation {
         }
     }
 
-    public static File getRiotClientServices() throws IOException {
+    private static void exit() {
+        Logger.debug("Unable to identify {}", StaticConstants.RIOT_INSTALLS_JSON);
+        JDialog dialog = new JDialog();
+        dialog.setModal(true);
+        String message = String.format("Failed to locate %s, please join our Discord for assistance", StaticConstants.RIOT_INSTALLS_JSON);
+        JOptionPane.showMessageDialog(dialog, message);
+        System.exit(1);
+    }
+
+    public static File getLeagueInstallDir() throws IOException {
         Logger.debug("identified ALLUSERSPROFILE as {}", System.getenv("ALLUSERSPROFILE"));
         File file = Paths.get(System.getenv("ALLUSERSPROFILE"))
                 .resolve(StaticConstants.RIOT_GAMES)
                 .resolve(StaticConstants.RIOT_INSTALLS_JSON).toFile();
-        if (!file.exists()) {
-            Logger.debug("Unable to identify {}", StaticConstants.RIOT_INSTALLS_JSON);
-            return getRiotClientServices();
-        }
+        if (!file.exists()) exit();
         Logger.debug("successfully found RiotInstalls.json");
         JSONObject object = new JSONObject(new String(Files.readAllBytes(file.toPath())));
-        List<String> list = load(new ArrayList<>(), object);
+        String live = object.getString("rc_live");
+        JSONObject clients = object.getJSONObject("associated_client");
+        List<String> list = new ArrayList<>();
+        for (String key : clients.keySet()) {
+            if (key.contains("PBE") || key.contains("VALORANT") || key.contains("LoR") || !clients.get(key).equals(live))
+                continue;
+            list.add(key);
+        }
         return list.stream().map(File::new)
                 .filter(File::exists)
                 .findAny()
                 .orElseGet(LocaleInstallation::get);
     }
 
-    public static File locateYaml(File riotClientServices) throws FileNotFoundException {
-        if (riotClientServices == null || !riotClientServices.exists()) {
+    public static File locateYaml(File leagueInstallDir) throws FileNotFoundException {
+        if (leagueInstallDir == null || !leagueInstallDir.exists()) {
             throw new FileNotFoundException("Unable to locate system.yaml");
         }
-        return riotClientServices.toPath()
-                .getParent()
-                .getParent()
-                .resolve(StaticConstants.LEAGUE_OF_LEGENDS)
+        return leagueInstallDir.toPath()
                 .resolve(StaticConstants.SYSTEM_YAML)
                 .toFile();
     }
