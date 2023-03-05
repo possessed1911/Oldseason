@@ -6,7 +6,7 @@
 
     <groupId>com.hawolt</groupId>
     <artifactId>Oldseason</artifactId>
-    <version>1.023</version>
+    <version>1.024</version>
 
     <build>
         <plugins>
