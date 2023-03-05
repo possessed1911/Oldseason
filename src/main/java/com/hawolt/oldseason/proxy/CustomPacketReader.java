@@ -1,8 +1,8 @@
 package com.hawolt.oldseason.proxy;
 
 import com.hawolt.logger.Logger;
-import com.hawolt.rtmp.io.RtmpPacket;
-import com.hawolt.rtmp.utility.ByteMagic;
+import com.hawolt.oldseason.proxy.rtmp.RtmpPacket;
+import com.hawolt.oldseason.utility.ByteMagic;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,8 +1,8 @@
 package com.hawolt.oldseason.proxy;
 
-import com.hawolt.rtmp.io.RtmpPacket;
-import com.hawolt.rtmp.utility.Base64GZIP;
-import com.hawolt.rtmp.utility.ByteMagic;
+import com.hawolt.oldseason.proxy.rtmp.RtmpPacket;
+import com.hawolt.oldseason.utility.Base64GZIP;
+import com.hawolt.oldseason.utility.ByteMagic;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

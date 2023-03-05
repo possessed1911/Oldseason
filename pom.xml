@@ -53,13 +53,13 @@
     <dependencies>
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
-            <artifactId>IO</artifactId>
+            <artifactId>Logger</artifactId>
             <version>d304842482</version>
         </dependency>
         <dependency>
-            <groupId>com.github.hawolt</groupId>
-            <artifactId>league-of-legends-rtmp</artifactId>
-            <version>fc713a5175</version>
+            <groupId>com.github.hawolt.hawolt-core</groupId>
+            <artifactId>IO</artifactId>
+            <version>d304842482</version>
         </dependency>
     </dependencies>
 
