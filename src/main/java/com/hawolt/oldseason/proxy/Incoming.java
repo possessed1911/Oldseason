@@ -1,7 +1,7 @@
 package com.hawolt.oldseason.proxy;
 
 import com.hawolt.logger.Logger;
-import com.hawolt.rtmp.utility.ByteMagic;
+import com.hawolt.oldseason.utility.ByteMagic;
 
 import java.io.InputStream;
 import java.io.OutputStream;
