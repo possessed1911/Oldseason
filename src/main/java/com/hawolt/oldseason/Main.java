@@ -29,7 +29,9 @@ public class Main {
     private static final List<String> legacy = new ArrayList<String>() {{
         add("eun1");
         add("tr");
+        add("ru");
     }};
+    
     private static final List<ServerSocket> proxies = new ArrayList<>();
     private static final Map<Integer, String> map = new HashMap<>();
 
