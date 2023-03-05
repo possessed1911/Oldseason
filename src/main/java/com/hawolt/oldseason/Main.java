@@ -57,7 +57,7 @@ public class Main {
             Application.launch("Oldseason");
             Application.addMenuEntry("Start Oldseason Client", () -> {
                 try {
-                    String client = LocaleInstallation.getRiotClientServices().toPath().getParent().getParent().resolve("League of Legends").resolve("LeagueClient.exe").toString();
+                    String client = LocaleInstallation.getLeagueInstallDir().toPath().resolve("LeagueClient.exe").toString();
                     Logger.debug("execute: \"" + client + "\" --allow-multiple-clients");
                     Runtime.getRuntime().exec("\"" + client + "\" --allow-multiple-clients");
                 } catch (IOException e) {
