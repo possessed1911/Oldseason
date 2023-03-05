@@ -23,14 +23,14 @@ public class Outgoing extends Connection {
         try (InputStream input = in.getInputStream()) {
             OutputStream stream = out.getOutputStream();
             int code, line = 0;
-            while ((code = input.read()) != -1) {
+            while (in.isConnected() && (code = input.read()) != -1) {
                 if (line >= 1) {
                     try {
                         customPacketReader.read((byte) code, input, stream);
                     } catch (Exception e) {
                         Logger.error(e);
                     }
-                } else {
+                } else if (out.isConnected()) {
                     stream.write(read(input, code, input.available()));
                     line++;
                 }

@@ -24,12 +24,11 @@ public class Incoming extends Connection {
             OutputStream stream = out.getOutputStream();
             int code;
             while (in.isConnected() && (code = input.read()) != -1) {
-                if (out.isConnected()) {
-                    byte[] b = read(input, code, input.available());
-                    Logger.debug("< {}", ByteMagic.toHex(b));
-                    stream.write(b);
-                }
+                byte[] b = read(input, code, input.available());
+                Logger.debug("< {}", ByteMagic.toHex(b));
+                if (out.isConnected()) stream.write(b);
             }
+            Logger.error("LOOP EXITED 1");
         } catch (Exception e) {
             Logger.error(e);
         }
