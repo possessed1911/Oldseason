@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 public class Main {
     private static final List<String> legacy = new ArrayList<String>() {{
+        add("eun1");
         add("tr");
     }};
     private static final List<ServerSocket> proxies = new ArrayList<>();
