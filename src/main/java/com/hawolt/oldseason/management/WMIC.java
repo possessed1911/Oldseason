@@ -27,7 +27,6 @@ public class WMIC {
 
     public static List<String> retrieve() throws IOException {
         String self = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
-        System.out.println(self);
         List<String> list = new ArrayList<>();
         for (String line : wmic().split(System.lineSeparator())) {
             if (!line.startsWith("javaw") || !line.contains("Oldseason")) continue;
