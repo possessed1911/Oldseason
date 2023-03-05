@@ -4,7 +4,6 @@ import com.hawolt.logger.Logger;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -75,10 +74,9 @@ public class LocaleInstallation {
 
     private static File get() {
         Logger.debug("opening file chooser dialog");
-        JOptionPane.showMessageDialog(null, "Please locate and select RiotClientServices.exe");
+        JOptionPane.showMessageDialog(null, "Please locate and select your League of Legends directory");
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Executable Files", "exe"));
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int option = fileChooser.showOpenDialog(null);
         if (option == JFileChooser.APPROVE_OPTION) {
             return fileChooser.getSelectedFile();
