@@ -38,7 +38,10 @@ public class LocaleInstallation {
         File file = Paths.get(System.getenv("ALLUSERSPROFILE"))
                 .resolve(StaticConstants.RIOT_GAMES)
                 .resolve(StaticConstants.RIOT_INSTALLS_JSON).toFile();
-        if (!file.exists()) return getRiotClientServices();
+        if (!file.exists()) {
+            Logger.debug("Unable to identify {}", StaticConstants.RIOT_INSTALLS_JSON);
+            return getRiotClientServices();
+        }
         Logger.debug("successfully found RiotInstalls.json");
         JSONObject object = new JSONObject(new String(Files.readAllBytes(file.toPath())));
         List<String> list = load(new ArrayList<>(), object);
