@@ -62,7 +62,7 @@ public class Main {
                     do {
                         try {
                             Socket incoming = socket.accept();
-                            Logger.debug("accepted connection on port {}", entry.getKey());
+                            Logger.debug("accepted connection on port {} relaying to {}", entry.getKey(), entry.getValue());
                             LeagueRtmpClient client = new LeagueRtmpClient(null, entry.getValue(), 2099);
                             client.connect();
                             Socket outgoing = client.getSocket();
