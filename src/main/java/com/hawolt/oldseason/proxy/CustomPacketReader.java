@@ -1,6 +1,8 @@
 package com.hawolt.oldseason.proxy;
 
+import com.hawolt.logger.Logger;
 import com.hawolt.rtmp.io.RtmpPacket;
+import com.hawolt.rtmp.utility.ByteMagic;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,8 +60,15 @@ public class CustomPacketReader {
             if (packet.isComplete()) break;
         }
 
+        Logger.debug(packet);
         if (!packet.isComplete()) return;
         map.remove(channel);
+
+        Logger.debug("> {}{}{}",
+                ByteMagic.toHex(packet.getInitialHeader()),
+                ByteMagic.toHex(packet.getHeader()),
+                ByteMagic.toHex(packet.getBody())
+        );
 
         Spoofer spoofer = new Spoofer(packet);
         spoofer.drain(outputStream);
