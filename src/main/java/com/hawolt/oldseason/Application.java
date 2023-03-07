@@ -25,7 +25,7 @@ public class Application {
     public static final List<MenuItem> list = new ArrayList<>();
 
     private static SystemTray tray;
-    private static PopupMenu popup;
+    public static PopupMenu popup;
 
     public static TrayIcon icon;
 
@@ -54,7 +54,6 @@ public class Application {
     public static void addExitOption() {
         addExitOption(null);
     }
-
 
     public static void addMenuEntry(String text, Runnable action) {
         MenuItem credit = new MenuItem(text);
