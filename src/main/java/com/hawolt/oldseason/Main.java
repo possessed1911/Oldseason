@@ -1,9 +1,13 @@
 package com.hawolt.oldseason;
 
 import com.hawolt.logger.Logger;
-import com.hawolt.oldseason.management.WMIC;
+import com.hawolt.oldseason.local.SessionTracker;
+import com.hawolt.oldseason.management.TaskManager;
 import com.hawolt.oldseason.proxy.Incoming;
 import com.hawolt.oldseason.proxy.Outgoing;
+import com.hawolt.oldseason.tray.ProviderPopupMenu;
+import com.hawolt.oldseason.utility.SSL;
+import com.hawolt.oldseason.web.Browser;
 
 import javax.net.ssl.SSLSocketFactory;
 import javax.swing.*;
@@ -11,9 +15,10 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -26,23 +31,30 @@ import java.util.stream.Collectors;
  **/
 
 public class Main {
+    public static CheckboxMenuItem automatic = new CheckboxMenuItem("Browse CS automatically");
     private static final List<String> legacy = new ArrayList<String>() {{
         add("eun1");
         add("tr");
         add("ru");
     }};
-    
+
     private static final List<ServerSocket> proxies = new ArrayList<>();
     private static final Map<Integer, String> map = new HashMap<>();
 
     public static void main(String[] args) {
         Logger.debug("Started oldseason at {}", new Date());
         try {
-            for (String pid : WMIC.retrieve()) {
+            for (String pid : TaskManager.retrieve()) {
                 Logger.debug("Found another running Oldseason instance, killing {}", pid);
-                WMIC.kill(pid);
+                TaskManager.kill(pid);
             }
         } catch (IOException e) {
+            Logger.error(e);
+        }
+        try {
+            SSL.bypass();
+            SessionTracker.launch();
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
             Logger.error(e);
         }
         try {
@@ -66,8 +78,11 @@ public class Main {
                     Logger.error(e);
                 }
             });
-            Application.addMenuEntry("Github", () -> browse("https://github.com/Riotphobia/Oldseason"));
-            Application.addMenuEntry("Twitter", () -> browse("https://twitter.com/hawolt"));
+            Main.automatic.setEnabled(false);
+            Application.popup.add(automatic);
+            Application.popup.add(new ProviderPopupMenu());
+            Application.addMenuEntry("Github", () -> Browser.browse("https://github.com/Riotphobia/Oldseason"));
+            Application.addMenuEntry("Twitter", () -> Browser.browse("https://twitter.com/hawolt"));
             for (Map.Entry<Integer, String> entry : map.entrySet()) {
                 Logger.debug("setting up proxy on port {} for {}", entry.getKey(), entry.getValue());
                 ServerSocket socket = new ServerSocket(entry.getKey());
@@ -141,13 +156,5 @@ public class Main {
         }
         byte[] bytes = lines.stream().collect(Collectors.joining(System.lineSeparator())).getBytes();
         Files.write(path, bytes);
-    }
-
-    private static void browse(String target) {
-        try {
-            Desktop.getDesktop().browse(URI.create(target));
-        } catch (IOException e) {
-            Logger.error(e);
-        }
     }
 }
