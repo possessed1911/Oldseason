@@ -1,5 +1,6 @@
 package com.hawolt.oldseason.proxy;
 
+import com.hawolt.oldseason.local.SessionTracker;
 import com.hawolt.oldseason.proxy.rtmp.RtmpPacket;
 import com.hawolt.oldseason.utility.Base64GZIP;
 import com.hawolt.oldseason.utility.ByteMagic;
@@ -80,6 +81,7 @@ public class Spoofer implements ByteSink {
             JSONArray alliedTeam = cells.getJSONArray("alliedTeam");
             for (int i = 0; i < alliedTeam.length(); i++) {
                 JSONObject given = alliedTeam.getJSONObject(0);
+                SessionTracker.check(given.getLong("summonerId"));
                 given.put("nameVisibilityType", "VISIBLE");
                 alliedTeam.remove(0);
                 alliedTeam.put(given);
