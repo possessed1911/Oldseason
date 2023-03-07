@@ -1,10 +1,9 @@
 package com.hawolt.oldseason.management;
 
-import com.hawolt.io.Core;
 import com.hawolt.logger.Logger;
+import com.hawolt.oldseason.local.WMIC;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,21 +13,12 @@ import java.util.List;
  * Author: Twitter @hawolt
  **/
 
-public class WMIC {
-
-    private static String wmic() throws IOException {
-        ProcessBuilder builder = new ProcessBuilder("WMIC", "path", "win32_process", "get", "Caption,Processid,Commandline");
-        builder.redirectErrorStream(true);
-        Process process = builder.start();
-        try (InputStream stream = process.getInputStream()) {
-            return Core.read(stream).toString();
-        }
-    }
+public class TaskManager {
 
     public static List<String> retrieve() throws IOException {
         String self = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
         List<String> list = new ArrayList<>();
-        for (String line : wmic().split(System.lineSeparator())) {
+        for (String line : WMIC.wmic().split(System.lineSeparator())) {
             if (!line.startsWith("javaw") || !line.contains("Oldseason")) continue;
             String pid = line.substring(line.lastIndexOf("\"") + 1).trim();
             if (pid.equals(self)) continue;
