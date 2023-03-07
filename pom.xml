@@ -6,7 +6,7 @@
 
     <groupId>com.hawolt</groupId>
     <artifactId>Oldseason</artifactId>
-    <version>1.0241</version>
+    <version>1.1</version>
 
     <build>
         <plugins>
@@ -59,6 +59,11 @@
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>IO</artifactId>
+            <version>458049e092</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hawolt.hawolt-core</groupId>
+            <artifactId>HTTP</artifactId>
             <version>458049e092</version>
         </dependency>
     </dependencies>
