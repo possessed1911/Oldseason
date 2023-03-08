@@ -35,16 +35,18 @@ public class Browser {
         LeagueClient client = association.getClient();
         try {
             Namespace namespace = getNamespace(client);
-            Logger.debug("Namespace: {}", namespace);
+            Logger.info("Namespace: {}", namespace);
             long start = System.currentTimeMillis();
             JSONArray participants = new JSONArray();
             do {
                 try {
                     participants = getChampSelect(client).getJSONArray("participants");
+                    Logger.debug("We currently have {} participants", participants.length());
                 } catch (Exception e) {
                     Logger.error(e);
                 }
             } while (participants.length() != 5 && System.currentTimeMillis() - start <= TimeUnit.SECONDS.toMillis(10));
+            Logger.debug("Exiting check with {} participants", participants.length());
             String query = participants.toList()
                     .stream()
                     .map(o -> (HashMap<?, ?>) o)
@@ -55,6 +57,7 @@ public class Browser {
             Provider provider = Provider.find(ProviderPopupMenu.selection);
             Logger.debug("p: {}", provider);
             if (provider == null) return;
+            Logger.debug("Starting provider {}", provider);
             browse(provider.format(namespace, query));
         } catch (IOException e) {
             Logger.error(e);

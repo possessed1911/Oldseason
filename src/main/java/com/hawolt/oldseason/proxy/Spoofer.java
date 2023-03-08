@@ -76,12 +76,13 @@ public class Spoofer implements ByteSink {
             String uncompressed = Base64GZIP.unzipBase64(new String(payload));
             JSONObject object = new JSONObject(uncompressed);
             if (!object.has("championSelectState")) return b;
+            long gameId = object.getLong("gameId");
             JSONObject championSelectState = object.getJSONObject("championSelectState");
             JSONObject cells = championSelectState.getJSONObject("cells");
             JSONArray alliedTeam = cells.getJSONArray("alliedTeam");
             for (int i = 0; i < alliedTeam.length(); i++) {
                 JSONObject given = alliedTeam.getJSONObject(0);
-                SessionTracker.check(given.getLong("summonerId"));
+                SessionTracker.check(gameId, given.getLong("summonerId"));
                 given.put("nameVisibilityType", "VISIBLE");
                 alliedTeam.remove(0);
                 alliedTeam.put(given);

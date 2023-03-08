@@ -24,13 +24,19 @@ import java.util.concurrent.TimeUnit;
 
 public class SessionTracker implements Runnable {
     public static void launch() {
-        Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(new SessionTracker(), 0, 1, TimeUnit.SECONDS);
+        Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(new SessionTracker(), 0, 5, TimeUnit.SECONDS);
     }
 
     public static final Map<Long, ClientAssociation> cache = new HashMap<>();
+    private static final List<Long> games = new ArrayList<>();
 
-    public static void check(long summonerId) {
+    public static void check(long gameId, long summonerId) {
+        Logger.debug("Assert summoner {} is us for gameId {}", summonerId, gameId);
         if (!cache.containsKey(summonerId) || !Main.automatic.getState()) return;
+        if (games.contains(gameId)) return;
+        Logger.debug("Mark game {} as visited for {}", gameId, summonerId);
+        SessionTracker.games.add(gameId);
+        Logger.debug("Attempting to fetch participants for {} in game {}", summonerId, gameId);
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> Browser.open(cache.get(summonerId)));
         service.shutdown();
@@ -53,6 +59,7 @@ public class SessionTracker implements Runnable {
                     boolean match = cache.values().stream().anyMatch(o -> o.getProfile().getDisplayName().equals(name));
                     if (match) continue;
                     SummonerProfile profile = new SummonerProfile(object);
+                    Logger.debug("Associate ourself as {}", profile.getSummonerId());
                     cache.put(profile.getSummonerId(), new ClientAssociation(client, profile));
                 } catch (Exception e) {
                     //TODO ignored
@@ -71,6 +78,7 @@ public class SessionTracker implements Runnable {
                     }
                 }
                 if (!match) {
+                    Logger.debug("Remove our association as {}", summonerId);
                     cache.remove(summonerId);
                 }
             }
