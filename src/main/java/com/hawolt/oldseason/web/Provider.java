@@ -9,7 +9,8 @@ public enum Provider {
     OPGG("https://www.op.gg/multisearch/%s?summoners=%s", false, false),
     UGG("https://u.gg/multisearch?region=%s&summoners=%s", true, false),
     POROFESSOR("https://porofessor.gg/pregame/%s/%s", false, false),
-    PORO("https://poro.gg/multi?region=%s&q=%s", false, true);
+    PORO("https://poro.gg/multi?region=%s&q=%s", false, true),
+    DEEPLOL("https://www.deeplol.gg/multi/%s/%s", false, true);
     //https://u.gg/multisearch?region=euw1&summoners=hawolt v4,hawolt v2
     private final String base;
     private final boolean platform, uppercase;
